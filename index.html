@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S&P 500 Price Announcer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .price-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .positive {
+            color: green;
+        }
+        .negative {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>S&P 500 Price Tracker</h1>
+    <div class="price-container">
+        <h2>Current Price: <span id="currentPrice">Loading...</span></h2>
+        <h3>Change: <span id="priceChange">--</span></h3>
+        <p>Last updated: <span id="lastUpdate">--</span></p>
+    </div>
+
+    <script>
+        let lastPrice = null;
+
+        async function getSP500Price() {
+            try {
+                const response = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC');
+                const data = await response.json();
+                const currentPrice = data.chart.result[0].meta.regularMarketPrice;
+                return currentPrice.toFixed(2);
+            } catch (error) {
+                console.error('Error fetching price:', error);
+                return null;
+            }
+        }
+
+        function updateDisplay(price) {
+            const currentPriceElement = document.getElementById('currentPrice');
+            const priceChangeElement = document.getElementById('priceChange');
+            const lastUpdateElement = document.getElementById('lastUpdate');
+
+            currentPriceElement.textContent = `$${price}`;
+            
+            if (lastPrice) {
+                const change = (price - lastPrice).toFixed(2);
+                const percentChange = ((change / lastPrice) * 100).toFixed(2);
+                const changeText = `${change >= 0 ? '+' : ''}${change} (${percentChange}%)`;
+                
+                priceChangeElement.textContent = changeText;
+                priceChangeElement.className = change >= 0 ? 'positive' : 'negative';
+
+                // Text to speech announcement
+                const speech = new SpeechSynthesisUtterance();
+                speech.text = `S&P 500 ${change >= 0 ? 'up' : 'down'} ${Math.abs(change)} points to ${price}`;
+                window.speechSynthesis.speak(speech);
+            }
+
+            lastPrice = price;
+            lastUpdateElement.textContent = new Date().toLocaleTimeString();
+        }
+
+        async function updatePrice() {
+            const price = await getSP500Price();
+            if (price) {
+                updateDisplay(price);
+            }
+        }
+
+        // Initial update
+        updatePrice();
+
+        // Update every 20 seconds
+        setInterval(updatePrice, 20000);
+    </script>
+</body>
+</html>
