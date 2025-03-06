@@ -39,7 +39,8 @@
 
         async function getSP500Price() {
             try {
-                const response = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC');
+                // Using a CORS proxy
+                const response = await fetch('https://cors-anywhere.herokuapp.com/https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC');
                 const data = await response.json();
                 const currentPrice = data.chart.result[0].meta.regularMarketPrice;
                 return currentPrice.toFixed(2);
