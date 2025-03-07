@@ -45,6 +45,7 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 const currentPrice = data['Global Quote']['05. price'];
+                console.log(data);
                 return currentPrice.toFixed(2);
             } catch (error) {
                 console.error('Error fetching price:', error);
