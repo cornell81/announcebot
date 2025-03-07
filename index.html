@@ -60,7 +60,7 @@
             const priceChangeElement = document.getElementById('priceChange');
             const lastUpdateElement = document.getElementById('lastUpdate');
 
-            currentPriceElement.textContent = `$${price}`;
+            currentPriceElement.textContent = ${price};
             
             if (lastPrice) {
                 const change = (price - lastPrice).toFixed(2);
