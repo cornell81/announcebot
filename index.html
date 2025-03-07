@@ -41,7 +41,7 @@
         async function getSP500Price() {
             try {
                 // Using a CORS proxy
-                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=SPY&apikey=${key}`;
+                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=${key}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 const currentPrice = data['Global Quote']['05. price'];
