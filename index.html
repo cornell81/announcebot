@@ -35,14 +35,16 @@
     </div>
 
     <script>
+        var key = 'H71OP6L1XH8AKGK6';
         let lastPrice = null;
 
         async function getSP500Price() {
             try {
                 // Using a CORS proxy
-                const response = await fetch('https://cors-anywhere.herokuapp.com/https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC');
+                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=SPY&apikey=${key}`;
+                const response = await fetch(url);
                 const data = await response.json();
-                const currentPrice = data.chart.result[0].meta.regularMarketPrice;
+                const currentPrice = data['Global Quote']['05. price'];
                 return currentPrice.toFixed(2);
             } catch (error) {
                 console.error('Error fetching price:', error);
